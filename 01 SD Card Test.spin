@@ -16,8 +16,8 @@ PUB main | dt, ti[2]
 
   ' set up a txt file in sd card 
   sd.Mount(0)
-  sd.FileNew(String("data2.txt"))
-  sd.FileOpen(String("data2.txt"), "W") 
+  sd.FileNew(String("data1.txt"))
+  sd.FileOpen(String("data1.txt"), "W") 
   sd.WriteStr(String("x      y      z"))
   sd.newline
        
