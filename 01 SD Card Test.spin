@@ -44,7 +44,7 @@ PUB main | dt, ti[2]
     sd.WriteDec(gyro[2])
     sd.WriteStr(String("   "))
     sd.newline
-    if(cnt < (cnt+3734912))
+    if(cnt < (cnt + 3734912))
       waitcnt(cnt + 3734912) 
   sd.FileClose
   sd.Unmount
