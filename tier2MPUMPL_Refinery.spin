@@ -24,7 +24,9 @@ Var
   long runStack[128], playID, displayStack[128]
 
   long before, elapse, base1, base2, base3, flag
-  
+
+
+  long dt, prev
   
 PUB main
 
@@ -35,12 +37,9 @@ PUB main
   setMpu(%000_00_000, %000_00_000) '250 deg/s, 2g
 
   startPlay
-  base1 := cnt
-  base2 := base1
-  base3 := base2
-  flag := 1
+
   repeat
-{    
+    fds.clear 
     if (flag ==1 AND(cnt > base1 + clkfreq/50))
       printAcc_GCS
       base1 := cnt
@@ -53,9 +52,14 @@ PUB main
       printMag_GCS
       base3 := cnt
       flag := 1
-}
-   printAll_GCS
-    waitcnt(cnt + clkfreq/50)
+
+
+    printAll
+'    printMag
+    
+    
+    printDt
+    waitcnt(cnt + clkfreq/10)
     
     'fds.newline  
         
@@ -88,7 +92,6 @@ PUB main
 
 
 
-
 PUB stopPlay
   if playID
     cogstop(playID ~ -1)
@@ -99,7 +102,9 @@ PUB startPlay
  
 PUB playSensor
   repeat
+    prev := cnt  
     run
+    dt := cnt - prev
                      
 PUB initSensor(scl, sda)
   sensor.initSensor(scl, sda)
@@ -112,8 +117,9 @@ PUB setMpu(gyroSet, accSet)
 PUB run
 
   sensor.reportData(@acc, @gyro,@mag, @temperature)
-
+           
   getAvgMag
+
 
   getAvgAcc
 
@@ -122,11 +128,11 @@ PUB run
   angVel[2] := gyro[2]' / 131  ' degree per second    
 
 
-  heading[0] := avgMag[0] - 5     'magneto meter offset
-  heading[1] := avgMag[1] - 42
-  heading[2] := avgMag[2] + 2
-
-  
+  heading[0] := avgMag[0] '- 5     'magneto meter offset
+  heading[1] := avgMag[1] '- 42
+  heading[2] := avgMag[2] '+ 2
+ 
+   
 PUB getAvgAcc | i, avgCoef
 
   avgCoef:= 5
@@ -190,13 +196,13 @@ PUB getGyroIntegral(xPtr)| i
 PUB getAcc(accPtr) | i
   repeat i from 0 to 2
     Long[accPtr][i] := avgAcc[i]
-  return
+  
   
 PUB getGyro(gyroPtr) | i
   Long[gyroPtr][0] := angVel[0]    
   Long[gyroPtr][1] := angVel[1]    
   Long[gyroPtr][2] := angVel[2]    
-  return
+  
   
 PUB getHeading(headingPtr)| i
   Long[headingPtr][0] := heading[0] 
@@ -214,6 +220,19 @@ PUB magY
   
 PUB magZ
   return heading[2]  
+
+
+
+PRI printDt
+
+  fds.str(String("dt = "))
+  fds.decLn(dt)
+
+
+  fds.str(String("freq = "))
+  fds.dec(80_000_000/dt)
+  fds.strLn(String(" Hz"))
+
 
 PRI printAll_GCS
 
@@ -303,7 +322,25 @@ PRI printMagInfo| i, j
   fds.newline  
   fds.str(String("x/y (aTan)"))
   fds.decLn(avgMag[0]/avgMag[1])
-  
+
+
+PRI printMag| i, j
+
+
+  fds.strLn(String("Avg Magnetometer"))  
+  fds.str(String("X: "))
+  fds.dec(mag[0])
+  fds.str(String(" Y: "))
+  fds.dec(mag[1])
+  fds.str(String(" Z: "))
+  fds.decLn(mag[2])
+  fds.newline
+  fds.str(string("magnitude^2 of magnetometer: "))
+  fds.decLn(avgMag[0]*avgMag[0] + avgMag[1]*avgMag[1] + avgMag[2]*avgMag[2])
+
+ ' fds.newline  
+ ' fds.str(String("x/y (aTan)"))
+ ' fds.decLn(avgMag[0]/avgMag[1])
   
 PRI printSomeX| i, j 
   fds.dec(gyro[1])
@@ -373,7 +410,7 @@ PRI printAll | i, j
         FDS.str(String("Gyro["))
         FDS.dec(j)
         FDS.str(String("]= "))      
-        FDS.decLn(gyro[j]/131)
+        FDS.decLn(gyro[j])
       if i ==2
         FDS.str(String("Mag["))
         FDS.dec(j)
