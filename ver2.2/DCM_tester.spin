@@ -12,7 +12,7 @@ VAR
 
   long stack[128]
   long acc[3], gyro[3], mag[3], euler[3]
-  
+  long dcmIsUpdated , dt, prev
 
 PUB main
 
@@ -25,6 +25,7 @@ PUB main
 
   repeat
     fds.clear
+    printDt
     printEuler
     fds.newline
     printAcc
@@ -38,11 +39,15 @@ PUB main
 PUB runTest
 
 repeat
-  sensor.getAcc(@acc)
-  sensor.getGyro(@gyro)
-  sensor.getMag(@mag)
-  sensor.getEulerAngles(@euler)
-
+   if (sensor.getDcmStatus>0)
+    sensor.getAcc(@acc)
+    sensor.getGyro(@gyro)
+    sensor.getMag(@mag)
+    sensor.getEulerAngles(@euler)
+    dt := cnt - prev
+    prev := cnt 
+    waitcnt(cnt + clkfreq/59)
+  
 
 
 PRI printEuler
@@ -85,3 +90,17 @@ PRI printGyro
 
   fds.str(String("gyroZ = ")) 
   fds.decln(gyro[2])
+
+
+PRI printDt
+  
+  fds.str(String("dt: "))
+  fds.decLn(dt)
+  fds.str(String("freq: ")) 
+  fds.dec(clkfreq/dt)
+  fds.strln(String(" Hz"))
+
+  
+
+
+  

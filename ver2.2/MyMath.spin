@@ -11,7 +11,7 @@ CON
 CMNSACLE = 10_000
 ObJ
 
-  'fds : "FullDuplexSerial.spin"
+  fds : "FullDuplexSerial"
   tr     : "TRIG.spin"
 
 
@@ -22,7 +22,7 @@ VAR
 
 PUB main
 
- ' fds.quickStart
+  fds.quickStart
 
   testAcc[0] := -1
   testAcc[1] := 2
@@ -30,8 +30,8 @@ PUB main
   
   repeat
     
-   ' fds.clear
-    'fds.decLn(getFirstDCM(@R, @testAcc))
+    fds.clear
+   ' fds.decLn(getFirstDCM(@R, @testAcc))
     waitcnt(cnt + clkfreq/10)
 
 PUB sqrt(value)| x, i

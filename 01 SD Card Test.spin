@@ -37,10 +37,6 @@ PUB main
 
 
   cognew(debug, @debugStack)
-'  sd.WriteStr(String("x      y      z")) >0
-   
-'  sd.newline
-       
   repeat while (flag) 'write the data here while timer is on (60 sec in this case)
     prev := cnt
     update   ' updates mpu data in acc[3], gyro[3], mag[3]
@@ -65,9 +61,10 @@ PUB main
     sd.WriteDec(gyro[2])
     sd.WriteStr(String("   "))
     sd.newline
-    if(cnt < (cnt + 3734912))
-      waitcnt(cnt + 3734912) 
+    waitcnt(cnt + 69000) 
     dt := cnt - prev
+
+    
   waitcnt(cnt + clkfreq)
   
   if sd.FileClose > 0
