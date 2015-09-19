@@ -26,6 +26,7 @@ PUB main
 
   cognew(timer, @timerStack) ' set up a timer for data collection time span
 
+
   
   ' set up a txt file in sd card 
   sd.Mount(0)
@@ -35,7 +36,7 @@ PUB main
   if sd.FileOpen(String("data1.txt"), "W") > 0
     fds.strln(String("file opened")) 
 
-
+  waitcnt(cnt + clkfreq*5)          
   cognew(debug, @debugStack)
   repeat while (flag) 'write the data here while timer is on (60 sec in this case)
     prev := cnt
@@ -76,7 +77,8 @@ PUB main
     fds.strln(String("file closed"))
     
   if sd.Unmount >0
-    fds.strln(String("sd card unmounted"))
+    repeat
+      fds.strln(String("sd card unmounted"))
      
 PRI startSensor 
   sensor.masterKey_tier3
@@ -85,6 +87,8 @@ PUB timer
   if flag == 1
     waitcnt(cnt + clkfreq*30)
     waitcnt(cnt + clkfreq*30)
+    waitcnt(cnt + clkfreq*30)
+    waitcnt(cnt + clkfreq*35)
     flag := 0
     
 PRI update

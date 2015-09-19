@@ -7,7 +7,7 @@ PERCENT_CONST = 1000
 OBJ
   sensor    : "Tier1MPUMPL_Raw.spin"
   FDS    : "FullDuplexSerial.spin"
-  math   : "MyMath.spin"  'no cog
+ 'math   : "MyMath.spin"  'no cog
 Var
   '2nd-level analized data
   Long compFilter[3], gForce, angVel[3], heading[3],avgAcc[3]

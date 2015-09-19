@@ -235,7 +235,7 @@ PUB getOmega |ki
     t3_omega[t3_counter] := t3_gyro[t3_counter]*CMNSCALE/131*314/100/180   '10_000 rad/s
     if (t3_omega[t3_counter] < 70 AND t3_omega[t3_counter] > -70)  ' for now eliminate gyro noise
       t3_omega[t3_counter] := 0 
-  't3_omega[t3_counter] += t3_I[t3_counter]* ki /CMNSCALE
+  t3_omega[t3_counter] += t3_I[t3_counter]* ki/10 /CMNSCALE
     
 PUB getEye
   t3_eye[0] := 10000
@@ -478,7 +478,7 @@ PUB dcmStep5 | DCMTrans[9]
 }  
 PUB dcmStep6 | kp
 
-  kp := 30000 'kp = 0.001
+  kp := 6500 'kp = 0.001
 
   'skew(Err_body(i,:))*kp
   t3_imdt[0] := 0
@@ -491,8 +491,8 @@ PUB dcmStep6 | kp
   t3_imdt[7] := t3_err_body[0]  * kp / CMNSCALE
   t3_imdt[8] := 0
 
-  repeat t3_counter from 0 to 8
-    t3_matrix_monitor1[t3_counter] :=  t3_imdt[t3_counter]
+'  repeat t3_counter from 0 to 8
+'    t3_matrix_monitor1[t3_counter] :=  t3_imdt[t3_counter]
 
 
   t3_freq_mpu := clkfreq / t3_dt_mpu
@@ -504,8 +504,8 @@ PUB dcmStep6 | kp
     t3_imdt[t3_counter] := t3_imdt[t3_counter] / t3_freq_mpu
     t3_imdt[t3_counter] := t3_eye[t3_counter] + t3_imdt[t3_counter]
 
-  repeat t3_counter from 0 to 8
-    t3_matrix_monitor2[t3_counter] :=  t3_imdt[t3_counter]
+'  repeat t3_counter from 0 to 8
+'    t3_matrix_monitor2[t3_counter] :=  t3_imdt[t3_counter]
 
 
   'R*(eye(3) + skew(Err_body(i,:))*kp*dt(i))
@@ -527,7 +527,7 @@ PUB dcmStep7
 
   repeat t3_counter from 0 to 2
     t3_intrmdtI[t3_counter] += t3_err_body[t3_counter]
-    t3_I[t3_counter] := -100000 #> t3_intrmdtI[t3_counter] <# 100000
+    t3_I[t3_counter] := -1000 #> t3_intrmdtI[t3_counter] <# 1000
   
   repeat t3_counter from 0 to 2
     t3_matrix_monitor3[t3_counter*3] := t3_I[t3_counter]
