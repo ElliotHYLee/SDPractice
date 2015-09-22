@@ -9,13 +9,13 @@ OBJ
   sensor        : "tier3MPUMPL_DCM.spin"
 
 VAR
-  long sensorCogId, sensorStack[128], mag[3], time, finish , acc[3], gyro[3], euler[3]
+  long sensorCogId, sensorStack[128], mag[3], time, finish , acc[3], gyro[3]
   long flag, timerStack[100]
 
   long debugStack[128], dt, prev
 
   
-PUB main 
+PUB main     | i
 
   fds.quickStart
   fds.clear
@@ -26,51 +26,24 @@ PUB main
 
   cognew(timer, @timerStack) ' set up a timer for data collection time span
 
-
   
   ' set up a txt file in sd card 
   sd.Mount(0)
   if sd.FileNew(String("data1.txt")) > 0
      fds.strln(String("file name created"))
      
-  if sd.FileOpen(String("data1.txt"), "W") > 0
+  if sd.FileOpen(String("data1.txt"), "W") >0
     fds.strln(String("file opened")) 
-  else
-    fds.strln(String("Error"))     
-  
-  waitcnt(cnt + clkfreq*6)          
+
+
   cognew(debug, @debugStack)
   repeat while (flag) 'write the data here while timer is on (60 sec in this case)
-    prev := cnt
-    update   ' updates mpu data in acc[3], gyro[3], mag[3]
-    sd.writeDec(cnt)
-    sd.WriteStr(String("   "))
-    sd.WriteDec(mag[0])
-    sd.WriteStr(String("   "))
-    sd.WriteDec(mag[1])
-    sd.WriteStr(String("   "))
-    sd.WriteDec(mag[2])
-    sd.WriteStr(String("   "))
-    sd.WriteDec(acc[0])
-    sd.WriteStr(String("   "))
-    sd.WriteDec(acc[1])
-    sd.WriteStr(String("   "))
-    sd.WriteDec(acc[2])
-    sd.WriteStr(String("   "))
-    sd.WriteDec(gyro[0])
-    sd.WriteStr(String("   "))
-    sd.WriteDec(gyro[1])
-    sd.WriteStr(String("   "))
-    sd.WriteDec(gyro[2])
-    sd.WriteStr(String("   "))
-    sd.WriteDec(euler[0])
-    sd.WriteStr(String("   "))
-    sd.WriteDec(euler[1])
-    sd.WriteStr(String("   "))
-    sd.WriteDec(euler[2])
-    sd.WriteStr(String("   "))
+    update   ' updates mag[3]
+    repeat i from 0 to 2    
+      sd.WriteDec(mag[i])
+      sd.WriteStr(String("   ")) 
     sd.newline
-    dt := cnt - prev
+
 
     
   waitcnt(cnt + clkfreq)
@@ -84,22 +57,22 @@ PUB main
      
 PRI startSensor 
   sensor.masterKey_tier3
-
+  
 PUB timer
   if flag == 1
     waitcnt(cnt + clkfreq*30)
     waitcnt(cnt + clkfreq*30)
-    waitcnt(cnt + clkfreq*30)
-    waitcnt(cnt + clkfreq*30)
-    waitcnt(cnt + clkfreq*30)
-    waitcnt(cnt + clkfreq*30)      
     flag := 0
-    
 PRI update
   sensor.getMag(@mag)
-  sensor.getAcc(@Acc)
-  sensor.getGyro(@gyro)
-  sensor.getEulerAngles(@euler)
+'  sensor.getAcc(@Acc)
+'  sensor.getGyro(@gyro)
+
+PRI stopSensor
+  if sensorCogId
+    cogstop(sensorCogId ~ - 1)
+
+
 
 PUB debug
   repeat while flag > 0

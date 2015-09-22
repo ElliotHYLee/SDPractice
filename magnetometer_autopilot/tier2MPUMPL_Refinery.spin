@@ -211,9 +211,10 @@ PUB getAvgMag | i, avgCoef
     avgMag[2] += prevMagZ[i]/avgCoef    
 
 
-  heading[0] := avgMag[0] - 20     'magneto meter offset
-  heading[1] := avgMag[1] - 25
-  heading[2] := avgMag[2] + 5
+  ' These coefficients are for actual onboard mpu  
+  heading[0] := avgMag[0] - 25     'magneto meter offset
+  heading[1] := avgMag[1] - 40
+  heading[2] := avgMag[2] - 45
 
   
 PUB getTemperautre(dataPtr)
