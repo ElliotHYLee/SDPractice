@@ -213,7 +213,7 @@ PUB getAvgMag | i, avgCoef
 
   ' These coefficients are for actual onboard mpu  
   heading[0] := avgMag[0] - 25     'magneto meter offset
-  heading[1] := avgMag[1] - 40
+  heading[1] := avgMag[1] - 55
   heading[2] := avgMag[2] - 45
 
   

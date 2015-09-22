@@ -41,7 +41,7 @@ PUB main
   
   repeat
     fds.clear
-    if (flag ==1 AND(cnt > base1 + clkfreq/50))
+    {if (flag ==1 AND(cnt > base1 + clkfreq/50))
       printAcc_GCS
       base1 := cnt
       flag :=2
@@ -53,7 +53,7 @@ PUB main
       printMag_GCS
       base3 := cnt
       flag := 1
-
+    }
 
     printAll
 '    printMag
@@ -122,6 +122,7 @@ PUB playSensor | goComp
   repeat
     prev := cnt  
     runGyro
+    runAcc
     goComp ++
     if goComp => 9
       runAccMag
@@ -211,10 +212,10 @@ PUB getAvgMag | i, avgCoef
     avgMag[2] += prevMagZ[i]/avgCoef    
 
 
-  heading[0] := avgMag[0] - 20     'magneto meter offset
-  heading[1] := avgMag[1] - 25
-  heading[2] := avgMag[2] + 5
-
+  ' These coefficients are for actual onboard mpu  
+  heading[0] := avgMag[0] - 25     'magneto meter offset
+  heading[1] := avgMag[1] - 55
+  heading[2] := avgMag[2] - 45
   
 PUB getTemperautre(dataPtr)
   Long[dataPtr] := temperature
