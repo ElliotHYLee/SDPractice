@@ -88,11 +88,11 @@ PRI startSensor
 PUB timer
   if flag == 1
     waitcnt(cnt + clkfreq*30)
-    waitcnt(cnt + clkfreq*30)
-    waitcnt(cnt + clkfreq*30)
-    waitcnt(cnt + clkfreq*30)
-    waitcnt(cnt + clkfreq*30)
-    waitcnt(cnt + clkfreq*30)      
+    'waitcnt(cnt + clkfreq*30)
+    'waitcnt(cnt + clkfreq*30)
+    'waitcnt(cnt + clkfreq*30)
+    'waitcnt(cnt + clkfreq*30)
+    'waitcnt(cnt + clkfreq*30)      
     flag := 0
     
 PRI update
@@ -104,8 +104,14 @@ PRI update
 PUB debug
   repeat while flag > 0
     fds.clear
-    fds.str(string("dt = "))
-    fds.decln(dt)
+    fds.str(string("acc1 = "))
+    fds.decln(acc[0])
+     fds.str(string("acc 2= "))
+    fds.decln(acc[1])
+     fds.str(string("acc3 = "))
+    fds.decln(acc[2])
+
+    
     fds.str(string("freq = "))
     fds.decln(80000000/dt)
     waitcnt(cnt + clkfreq/10)
